@@ -13,6 +13,7 @@
     "nodemon": "^1.18.4",
     "body-parser": "^1.18.3",
     "mongoose": "^5.2.17",
-    "morgan": "^1.9.1"
+    "morgan": "^1.9.1",
+    "cors": "^2.8.4"
   }
 }
