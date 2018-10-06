@@ -8,6 +8,10 @@ var movieSchema = new mongoose.Schema({
     linkimage: {
         type: String,
         require: true
+    },
+    linkvideo: {
+        type: String,
+        require: true
     }
 });
 

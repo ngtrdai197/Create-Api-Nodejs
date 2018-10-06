@@ -17,6 +17,7 @@ app.options('*', cors());
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static('./public/uploads'));
 database.dbConnection();
 
 app.use("/api", uploader());

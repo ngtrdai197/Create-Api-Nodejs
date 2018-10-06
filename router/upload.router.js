@@ -12,7 +12,7 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage });
 module.exports = function () {
     router.post("/upload", upload.any(), function (req, res) {
-        res.status(200).send(req.files);
+        res.send(req.files);
     });
     return router;
 }
