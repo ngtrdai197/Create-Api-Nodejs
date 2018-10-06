@@ -4,7 +4,7 @@ module.exports = {
     loginUser: function (req, res) {
         User.findOne({ 'username': req.body.username }).then(user => {
             if (user) {
-                if ((req.body.username == user.username) && (req.body.password == user.password)) {
+                if ((req.body.username == user.username) && (req.body.password == user.password)){
                     return res.status(200).json(user);
                 }
             }
