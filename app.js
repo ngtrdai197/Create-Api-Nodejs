@@ -6,10 +6,10 @@ var cors = require("cors");
 var app = express();
 var server = require("http").Server(app);
 var socketio = require('socket.io')(server);
-var userRouter = require("./router/user.router");
-var movieRouter = require("./router/movie.router");
 var ioController = require('./controllers/socketio.controller')(socketio);
+var userRouter = require("./router/user.router");
 var uploader = require("./router/upload.router");
+var movieRouter = require("./router/movie.router");
 var port = process.env.PORT || 3000;
 
 app.use(cors());
