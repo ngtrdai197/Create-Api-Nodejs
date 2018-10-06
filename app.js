@@ -11,14 +11,13 @@ var userRouter = require("./router/user.router");
 var uploader = require("./router/upload.router");
 var movieRouter = require("./router/movie.router");
 var port = process.env.PORT || 3000;
-
 app.use(cors());
 app.options('*', cors());
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('./public/uploads'));
-database.dbConnection();
+const conn = database.dbConnection();
 
 app.use("/api", uploader());
 app.use("/users", userRouter());
