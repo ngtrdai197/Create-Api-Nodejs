@@ -4,7 +4,8 @@ module.exports = {
     create: function (req, res) {
         const movie = new Movie({
             moviename: req.body.moviename,
-            linkimage: req.body.linkimage
+            linkimage: req.body.linkimage,
+            linkvideo: req.body.linkvideo
         });
         movie.save().then(() => {
             res.status(200).json({ status: 'Create movie successfully' });
@@ -42,7 +43,9 @@ module.exports = {
     update: function (req, res) {
         Movie.findByIdAndUpdate(req.params.id, {
             moviename: req.body.moviename,
-            linkimage: req.body.linkimage
+            linkimage: req.body.linkimage,
+            linkvideo: req.body.linkvideo
+
 
         }, { new: true }).then(movie => {
             if (!movie) {
