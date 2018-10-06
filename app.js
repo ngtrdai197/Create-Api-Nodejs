@@ -10,7 +10,6 @@ var userRouter = require("./router/user.router");
 var movieRouter = require("./router/movie.router");
 var ioController = require('./controllers/socketio.controller')(socketio);
 var uploader = require("./router/upload.router");
-
 var port = process.env.PORT || 3000;
 
 app.use(cors());
@@ -20,7 +19,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 database.dbConnection();
 
-
+app.use("/api", uploader());
 app.use("/users", userRouter());
 app.use("/movies", movieRouter());
 
