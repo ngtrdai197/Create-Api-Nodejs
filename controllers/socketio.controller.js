@@ -1,28 +1,21 @@
 var countConnectedUsers = 0;
 module.exports = function (io) {
-    io.on('connection', function (socket) {
-        countConnectedUsers++;
-        socket.on('connected', function () {
-            console.log(`${socket.id} đã kết nối!`);
+    const arrUserInfo = [];
+    io.on('connection', socket => {
+        socket.on('NGUOI_DUNG_DANG_KY', user => {
+            const isExist = arrUserInfo.some(e => e.ten === user.ten);
+            socket.peerId = user.peerId;
+            if (isExist) return socket.emit('DANG_KY_THAT_BAT');
+            arrUserInfo.push(user);
+            socket.emit('DANH_SACH_ONLINE', arrUserInfo);
+            socket.broadcast.emit('CO_NGUOI_DUNG_MOI', user);
         });
-        io.sockets.emit('count-connected-user', countConnectedUsers);
-        socket.on('send', function (data) {
-            io.sockets.emit('server-send', data);
-        })
-        socket.on('client-disconnect', function () {
-            // io.sockets.emit('count-connected-user', countConnectedUsers--);
-            countConnectedUsers--;
-            socket.on('disconnect', function () {
-                console.log(`${socket.id}: đã ngắt kết nối!`);
-                io.sockets.emit('count-connected-user', countConnectedUsers);
-            });
-        })
-        socket.on('disconnect', function () {
-            countConnectedUsers--;
-            console.log(`${socket.id}: đã ngắt kết nối!`);
-            io.sockets.emit('count-connected-user', countConnectedUsers);
-
+        socket.on('disconnect', () => {
+            const index = arrUserInfo.findIndex(user => user.peerId === socket.peerId);
+            arrUserInfo.splice(index, 1);
+            io.emit('AI_DO_NGAT_KET_NOI', socket.peerId);
         });
     });
+
 
 }

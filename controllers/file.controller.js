@@ -1,81 +1,60 @@
-var File = require("../models/file.model");
-
+var Grid = require('gridfs-stream');
+var mongoose = require('mongoose');
+var fs = require('fs');
 module.exports = {
-    create: function (req, res) {
-        const file = new File({
-            filename: req.params.filename
+    uploadFile: function (req, res) {
+        var gfs = Grid(mongoose.connection.db, mongoose.mongo);
+        var writeStream = gfs.createWriteStream();
+
+        fs.createReadStream(req.file.path).pipe(writeStream);
+
+        writeStream.on('close', function (file) {
+            res.status(200).send({ fileId: file._id });
         });
-        file.save().then(() => {
-            res.status(200).json({ status: 'Create file successfully' });
-        }).catch(err => {
-            res.status(500).send({ message: err.message });
+        writeStream.on('error', function (e) {
+            res.status(500).send("Could not upload file");
         });
     },
-
     findAll: function (req, res) {
-        File.find().then(file => {
-            res.send(file);
-        }).catch(err => {
-            res.status(500).send({ message: err.message });
+        var gfs = Grid(mongoose.connection.db, mongoose.mongo);
+        gfs.findOne({ _id: req.params.id }, function (err, file) {
+            if (err) {
+                res.status(404).end();
+            } else if (!file) {
+                res.status(404).end();
+            } else {
+                var readstream = gfs.createReadStream({
+                    _id: file._id
+                });
+
+                res.set('Content-Type', file.contentType);
+
+                readstream.on('error', function (err) {
+                    res.send(500, err);
+                });
+                readstream.on('open', function () {
+                    readstream.pipe(res);
+                });
+            }
         });
     },
     findOne: function (req, res) {
-        File.findById(req.params.id).then(file => {
+        File.findById(req.params._id).then(file => {
             if (!file) {
                 return res.status(404).send({
-                    message: "file not found with id " + req.params.id
+                    message: "file not found with filename " + req.params.filename
                 });
             }
             res.send(file);
         }).catch(err => {
             if (err.kind === 'ObjectId') {
                 return res.status(404).send({
-                    message: "file not found with id " + req.params.id
+                    message: "file not found with id " + req.params.filename
                 });
             }
             return res.status(500).send({
-                message: "Error retrieving file with id " + req.params.id
+                message: "Error retrieving file with id " + req.params.filename
             });
         });
     },
-    update: function (req, res) {
-        File.findByIdAndUpdate(req.params.id, {
-            filename: req.params.filename
-        }, { new: true }).then(file => {
-            if (!file) {
-                return res.status(404).send({
-                    message: "file not found with id " + req.params.id
-                });
-            }
-            res.send(file);
-        }).catch(err => {
-            if (err.kind === 'ObjectId') {
-                return res.status(404).send({
-                    message: "file not found with id " + req.params.id
-                });
-            }
-            return res.status(500).send({
-                message: "Error updating file with id " + req.params.id
-            });
-        });
-    },
-    delete: function (req, res) {
-        File.findByIdAndRemove(req.params.id).then(file => {
-            if (!file) {
-                return res.status(404).send({
-                    message: "file not found with id " + req.params.id
-                });
-            }
-            res.send({ message: "file deleted successfully!" });
-        }).catch(err => {
-            if (err.kind === 'ObjectId' || err.name === 'NotFound') {
-                return res.status(404).send({
-                    message: "file not found with id " + req.params.id
-                });
-            }
-            return res.status(500).send({
-                message: "Could not delete file with id " + req.params.id
-            });
-        });
-    }
 }
