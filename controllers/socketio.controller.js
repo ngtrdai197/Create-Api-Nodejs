@@ -1,27 +1,26 @@
-var countConnectedUsers = 0;
 module.exports = function (io) {
+    let users = [];
+    let connectCount = 0;
     io.on('connection', function (socket) {
-        countConnectedUsers++;
-        socket.on('connected', function () {
-            console.log(`${socket.id} đã kết nối!`);
+        console.log('Đã có người vừa kết nối');
+        connectCount++;
+        socket.on('connected', function (username) {
+            users.push(username);
+            io.sockets.emit('server-send-list-user', users);
+            io.sockets.emit('count-connected-user', connectCount);
         });
-        io.sockets.emit('count-connected-user', countConnectedUsers);
+
+        io.sockets.emit('count-connected-user', connectCount);
         socket.on('send', function (data) {
             io.sockets.emit('server-send', data);
         })
-        socket.on('client-disconnect', function () {
-            // io.sockets.emit('count-connected-user', countConnectedUsers--);
-            countConnectedUsers--;
-            socket.on('disconnect', function () {
-                console.log(`${socket.id}: đã ngắt kết nối!`);
-                io.sockets.emit('count-connected-user', countConnectedUsers);
-            });
-        })
-        socket.on('disconnect', function () {
-            countConnectedUsers--;
-            console.log(`${socket.id}: đã ngắt kết nối!`);
-            io.sockets.emit('count-connected-user', countConnectedUsers);
 
+        socket.on('disconnect', function (oneUsers) {
+            connectCount--;
+            users.splice(users.indexOf(oneUsers), 1);
+            io.sockets.emit('count-connected-user', connectCount);
+            io.sockets.emit('server-send-list-user', users)
+            console.log('Có người vừa ngắt kết nối');
         });
     });
 

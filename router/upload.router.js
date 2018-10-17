@@ -1,15 +1,15 @@
-var express = require('express');
-var multer = require('multer');
-var router = express.Router();
-var storage = multer.diskStorage({
+const express = require('express');
+const multer = require('multer');
+const router = express.Router();
+const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, '../public/uploads');
+        cb(null, './public/uploads/');
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + '-' + file.originalname);
     }
 });
-var upload = multer({ storage: storage });
+const upload = multer({ storage: storage });
 module.exports = function () {
     router.post("/upload", upload.any(), function (req, res) {
         res.status(200).send(req.files);
