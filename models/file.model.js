@@ -3,7 +3,15 @@ var mongoose = require("mongoose");
 var fileSchema = new mongoose.Schema({
     filename: {
         type: String,
-        require: true
+        required: true
+    },
+    fileOriginal: {
+        type: String,
+        required: true
+    },
+    uploadDate: {
+        type: Date,
+        required: true
     }
 });
 

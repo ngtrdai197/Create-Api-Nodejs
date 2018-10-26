@@ -1,26 +1,37 @@
 var Movie = require("../models/movie.model");
 
 module.exports = {
+    // POST a Movie
     create: function (req, res) {
+        // Create a Movie
         const movie = new Movie({
             moviename: req.body.moviename,
             linkimage: req.body.linkimage,
-            linkvideo: req.body.linkvideo
         });
+        console.log(movie);
+
+        // Save a Movie in the MongoDB
         movie.save().then(() => {
-            res.status(200).json({ status: 'Create movie successfully' });
+            res.status(200).json({ status: 'Create successfully' });
         }).catch(err => {
-            res.status(500).send({ message: err.message });
+            res.status(500).send({
+                message: err.message
+            });
         });
     },
 
+    // FETCH all Movie
     findAll: function (req, res) {
         Movie.find().then(movie => {
             res.send(movie);
         }).catch(err => {
-            res.status(500).send({ message: err.message });
+            res.status(500).send({
+                message: err.message
+            });
         });
     },
+
+    // FETCH a movie
     findOne: function (req, res) {
         Movie.findById(req.params.id).then(movie => {
             if (!movie) {
@@ -40,12 +51,12 @@ module.exports = {
             });
         });
     },
+    // UPDATE a Movie
     update: function (req, res) {
+        // Find movie and update it
         Movie.findByIdAndUpdate(req.params.id, {
             moviename: req.body.moviename,
             linkimage: req.body.linkimage,
-            linkvideo: req.body.linkvideo
-
 
         }, { new: true }).then(movie => {
             if (!movie) {
@@ -65,18 +76,19 @@ module.exports = {
             });
         });
     },
+    // DELETE a Movie
     delete: function (req, res) {
         Movie.findByIdAndRemove(req.params.id).then(movie => {
             if (!movie) {
                 return res.status(404).send({
-                    message: "movie not found with id " + req.params.id
+                    message: "Movie not found with id " + req.params.id
                 });
             }
-            res.send({ message: "movie deleted successfully!" });
+            res.send({ message: "Movie deleted successfully!" });
         }).catch(err => {
             if (err.kind === 'ObjectId' || err.name === 'NotFound') {
                 return res.status(404).send({
-                    message: "movie not found with id " + req.params.id
+                    message: "Movie not found with id " + req.params.id
                 });
             }
             return res.status(500).send({

@@ -1,5 +1,5 @@
 var mongoose = require("mongoose");
-
+//mongodb://ngtrdai197:anhdaii1@ds239911.mlab.com:39911/dbtest
 function dbConnection() {
     mongoose.Promise = global.Promise;
     mongoose.connect("mongodb://ngtrdai197:anhdaii1@ds239911.mlab.com:39911/dbtest", { useNewUrlParser: true }).then(function () {

@@ -1,16 +1,14 @@
-var express = require("express");
-var bodyParser = require("body-parser");
-var morgan = require("morgan");
-var database = require("./config/database");
-var cors = require("cors");
-var app = express();
-var server = require("http").Server(app);
-var socketio = require('socket.io')(server, {path:'/chat'}); // localhost:4200/chat
-require('./controllers/socketio.controller')(socketio); //socketIO
-var userRouter = require("./router/user.router");
-var uploader = require("./router/upload.router"); //upload file
-var movieRouter = require("./router/movie.router");
-var port = process.env.PORT || 3000;
+const express = require("express");
+const bodyParser = require("body-parser");
+const morgan = require("morgan");
+const database = require("./config/database");
+const cors = require("cors");
+const app = express();
+const userRouter = require("./router/user.router");
+const movieRouter = require("./router/movie.router");
+const uploader = require("./router/file.router"); //upload file
+const port = process.env.PORT || 3000;
+
 app.use(cors());
 app.options('*', cors());
 app.use(morgan("dev"));
@@ -23,6 +21,6 @@ app.use("/api", uploader());
 app.use("/users", userRouter());
 app.use("/movies", movieRouter());
 
-server.listen(port, function () {
+app.listen(port, function () {
     console.log(`Nodejs listening at port: ${port}`);
 });

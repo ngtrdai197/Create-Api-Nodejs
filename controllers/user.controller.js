@@ -3,6 +3,7 @@ var User = require("../models/user.model");
 module.exports = {
     // POST a User
     create: function (req, res) {
+        console.log('vao');
         // Create a User
         const user = new User({
             username: req.body.username,
@@ -53,7 +54,9 @@ module.exports = {
     },
     // UPDATE a user
     update: function (req, res) {
-        // Find user and update it
+        console.log('vao');
+
+        // Find user and update id
         User.findByIdAndUpdate(req.params.id, {
             username: req.body.username,
             password: req.body.password,
