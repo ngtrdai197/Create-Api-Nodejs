@@ -12,7 +12,7 @@ module.exports = {
 
         // Save a Movie in the MongoDB
         movie.save().then(() => {
-            res.status(200).json({ status: 'Create successfully' });
+            res.status(200).send({ status: 'Create successfully' });
         }).catch(err => {
             res.status(500).send({
                 message: err.message
@@ -54,6 +54,8 @@ module.exports = {
     // UPDATE a Movie
     update: function (req, res) {
         // Find movie and update it
+        console.log('data log ne: ' + req);
+
         Movie.findByIdAndUpdate(req.params.id, {
             moviename: req.body.moviename,
             linkimage: req.body.linkimage,

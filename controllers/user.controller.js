@@ -3,7 +3,6 @@ var User = require("../models/user.model");
 module.exports = {
     // POST a User
     create: function (req, res) {
-        console.log('vao');
         // Create a User
         const user = new User({
             username: req.body.username,
@@ -11,9 +10,11 @@ module.exports = {
             fullname: req.body.fullname,
             email: req.body.email
         });
+        console.log(user);
+
         // Save a User in the MongoDB
-        user.save().then(() => {
-            res.status(200).json({ status: 'Regiter successfully' });
+        user.save().then((user) => {
+            res.status(200).send(user);
         }).catch(err => {
             res.status(500).send({
                 message: err.message
@@ -54,8 +55,6 @@ module.exports = {
     },
     // UPDATE a user
     update: function (req, res) {
-        console.log('vao');
-
         // Find user and update id
         User.findByIdAndUpdate(req.params.id, {
             username: req.body.username,
