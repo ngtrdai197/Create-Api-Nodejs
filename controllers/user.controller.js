@@ -1,18 +1,15 @@
-var User = require("../models/user.model");
-
+const User = require("../models/user.model");
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 module.exports = {
     // POST a User
     create: function (req, res) {
-        // Create a User
         const user = new User({
             username: req.body.username,
-            password: req.body.password,
+            password: bcrypt.hashSync(req.body.password, saltRounds),
             fullname: req.body.fullname,
-            email: req.body.email
+            email: bcrypt.hashSync(req.body.email, saltRounds)
         });
-        console.log(user);
-
-        // Save a User in the MongoDB
         user.save().then((user) => {
             res.status(200).send(user);
         }).catch(err => {
@@ -58,9 +55,9 @@ module.exports = {
         // Find user and update id
         User.findByIdAndUpdate(req.params.id, {
             username: req.body.username,
-            password: req.body.password,
+            password: bcrypt.hashSync(req.body.password, saltRounds),
             fullname: req.body.fullname,
-            email: req.body.email
+            email: bcrypt.hashSync(req.body.email, saltRounds)
 
         }, { new: true }).then(user => {
             if (!user) {
